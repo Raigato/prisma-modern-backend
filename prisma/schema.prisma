@@ -17,6 +17,8 @@ model User {
   lastName    String
   social      Json[]
   enrollments CourseEnrollment[]
+  results     TestResult[]       @relation("results")
+  graded      TestResult[]       @relation("graded")
 }
 
 model Course {
@@ -41,8 +43,12 @@ model TestResult {
   id        String   @id @default(uuid())
   result    Int // Percent with one decimal multiplied by 10. Ex: 95.5 => 955
   createdAt DateTime @default(now())
-  Test      Test     @relation(fields: [testId], references: [id])
+  test      Test     @relation(fields: [testId], references: [id])
   testId    String
+  student   User     @relation(name: "results", fields: [studentId], references: [id])
+  studentId String
+  grader    User     @relation(name: "graded", fields: [graderId], references: [id])
+  graderId  String
 }
 
 enum UserRole {
@@ -53,12 +59,10 @@ enum UserRole {
 model CourseEnrollment {
   role      UserRole
   createdAt DateTime @default(now())
-
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
-
-  course   Course @relation(fields: [courseId], references: [id])
-  courseId String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  course    Course   @relation(fields: [courseId], references: [id])
+  courseId  String
 
   @@id([userId, courseId, role])
 }
