@@ -1,7 +1,8 @@
-import app from './app'
 import prisma from './lib/prisma'
 
-app()
+const seed = async () => {}
+
+seed()
   .catch((e: Error) => {
     console.error(e)
     process.exit(1)
