@@ -24,19 +24,25 @@ model Course {
   name        String
   details     String
   enrollments CourseEnrollment[]
+  tests       Test[]
 }
 
 model Test {
-  id        String   @id @default(uuid())
+  id        String       @id @default(uuid())
   name      String
   date      DateTime
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime     @updatedAt
+  course    Course       @relation(fields: [courseId], references: [id])
+  courseId  String
+  results   TestResult[]
 }
 
 model TestResult {
   id        String   @id @default(uuid())
   result    Int // Percent with one decimal multiplied by 10. Ex: 95.5 => 955
   createdAt DateTime @default(now())
+  Test      Test     @relation(fields: [testId], references: [id])
+  testId    String
 }
 
 enum UserRole {
