@@ -2,6 +2,7 @@ import prisma from './lib/prisma'
 import { add } from 'date-fns'
 
 const resetDB = async () => {
+  await prisma.courseEnrollment.deleteMany()
   await prisma.test.deleteMany()
   await prisma.course.deleteMany()
   await prisma.user.deleteMany()
@@ -46,9 +47,22 @@ const seed = async () => {
           },
         ],
       },
+      enrollments: {
+        create: {
+          role: 'TEACHER',
+          user: {
+            connect: { email: user.email },
+          },
+        },
+      },
     },
     include: {
       tests: true,
+      enrollments: {
+        include: {
+          user: true,
+        },
+      },
     },
   })
 
