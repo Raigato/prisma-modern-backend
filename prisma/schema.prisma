@@ -27,7 +27,7 @@ model Course {
 model Test {
   id        String   @id @default(uuid())
   name      String
-  data      DateTime
+  date      DateTime
   updatedAt DateTime @updatedAt
 }
 
