@@ -11,17 +11,19 @@ datasource db {
 }
 
 model User {
-  id        String @id @default(uuid())
-  email     String @unique
-  firstName String
-  lastName  String
-  social    Json[]
+  id          String             @id @default(uuid())
+  email       String             @unique
+  firstName   String
+  lastName    String
+  social      Json[]
+  enrollments CourseEnrollment[]
 }
 
 model Course {
-  id      String @id @default(uuid())
-  name    String
-  details String
+  id          String             @id @default(uuid())
+  name        String
+  details     String
+  enrollments CourseEnrollment[]
 }
 
 model Test {
@@ -35,4 +37,22 @@ model TestResult {
   id        String   @id @default(uuid())
   result    Int // Percent with one decimal multiplied by 10. Ex: 95.5 => 955
   createdAt DateTime @default(now())
+}
+
+enum UserRole {
+  STUDENT
+  TEACHER
+}
+
+model CourseEnrollment {
+  role      UserRole
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  course   Course @relation(fields: [courseId], references: [id])
+  courseId String
+
+  @@id([userId, courseId, role])
 }
