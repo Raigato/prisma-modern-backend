@@ -15,5 +15,11 @@ model User {
   email     String @unique
   firstName String
   lastName  String
-  social    Json?
+  social    Json[]
+}
+
+model Course {
+  id      String @id @default(uuid())
+  name    String
+  details String
 }
