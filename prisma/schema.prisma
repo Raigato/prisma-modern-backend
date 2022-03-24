@@ -11,44 +11,54 @@ datasource db {
 }
 
 model User {
-  id          String             @id @default(uuid())
-  email       String             @unique
-  firstName   String
-  lastName    String
-  social      Json[]
+  id        String @id @default(uuid())
+  email     String @unique
+  firstName String
+  lastName  String
+  social    Json[]
+
   enrollments CourseEnrollment[]
-  results     TestResult[]       @relation("results")
-  graded      TestResult[]       @relation("graded")
+
+  results TestResult[] @relation("results")
+
+  graded TestResult[] @relation("graded")
 }
 
 model Course {
-  id          String             @id @default(uuid())
-  name        String
-  details     String
+  id      String @id @default(uuid())
+  name    String
+  details String
+
   enrollments CourseEnrollment[]
-  tests       Test[]
+
+  tests Test[]
 }
 
 model Test {
-  id        String       @id @default(uuid())
+  id        String   @id @default(uuid())
   name      String
   date      DateTime
-  updatedAt DateTime     @updatedAt
-  course    Course       @relation(fields: [courseId], references: [id])
-  courseId  String
-  results   TestResult[]
+  updatedAt DateTime @updatedAt
+
+  course   Course @relation(fields: [courseId], references: [id])
+  courseId String
+
+  results TestResult[]
 }
 
 model TestResult {
   id        String   @id @default(uuid())
   result    Int // Percent with one decimal multiplied by 10. Ex: 95.5 => 955
   createdAt DateTime @default(now())
-  test      Test     @relation(fields: [testId], references: [id])
-  testId    String
-  student   User     @relation(name: "results", fields: [studentId], references: [id])
+
+  test   Test   @relation(fields: [testId], references: [id])
+  testId String
+
+  student   User   @relation(name: "results", fields: [studentId], references: [id])
   studentId String
-  grader    User     @relation(name: "graded", fields: [graderId], references: [id])
-  graderId  String
+
+  grader   User   @relation(name: "graded", fields: [graderId], references: [id])
+  graderId String
 }
 
 enum UserRole {
@@ -59,10 +69,12 @@ enum UserRole {
 model CourseEnrollment {
   role      UserRole
   createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-  course    Course   @relation(fields: [courseId], references: [id])
-  courseId  String
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  course   Course @relation(fields: [courseId], references: [id])
+  courseId String
 
   @@id([userId, courseId, role])
 }
