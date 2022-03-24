@@ -29,5 +29,10 @@ model Test {
   name      String
   data      DateTime
   updatedAt DateTime @updatedAt
+}
 
+model TestResult {
+  id        String   @id @default(uuid())
+  result    Int // Percent with one decimal multiplied by 10. Ex: 95.5 => 955
+  createdAt DateTime @default(now())
 }
