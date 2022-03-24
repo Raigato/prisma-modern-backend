@@ -23,3 +23,11 @@ model Course {
   name    String
   details String
 }
+
+model Test {
+  id        String   @id @default(uuid())
+  name      String
+  data      DateTime
+  updatedAt DateTime @updatedAt
+
+}
