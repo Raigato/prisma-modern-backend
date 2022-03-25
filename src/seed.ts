@@ -1,5 +1,6 @@
 import prisma from './lib/prisma'
 import { add } from 'date-fns'
+import logger from './lib/logger'
 
 const resetDB = async () => {
   await prisma.testResult.deleteMany()
@@ -158,16 +159,16 @@ const seed = async () => {
     },
   })
 
-  console.log('Dr. Doe', drDoe)
-  console.log('course', course)
-  console.log('Tupac Shakur', shakur)
-  console.log('Jada Menace', jada)
-  console.log("Tupac's avg", shakurAvg)
+  logger.logger.info(drDoe, 'Dr Doe')
+  logger.logger.info(course, 'course')
+  logger.logger.info(shakur, 'Tupac Shakur')
+  logger.logger.info(jada, 'Jada Menace')
+  logger.logger.info(shakurAvg, "Tupac's results")
 }
 
 seed()
   .catch((e: Error) => {
-    console.error(e)
+    logger.logger.error(e)
     process.exit(1)
   })
   .finally(() => prisma.$disconnect())
