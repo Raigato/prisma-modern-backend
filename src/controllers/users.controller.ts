@@ -62,3 +62,32 @@ export const createUserHandler = async (req: Request, res: APIResponse) => {
     .status(201)
     .json({ status: STATUS.SUCCESS, data: { id: createdUser.id } })
 }
+
+const GetSingleUserParams = z.object({
+  userId: z.string().uuid(),
+})
+
+export const getSingleUserHandler = async (req: Request, res: APIResponse) => {
+  try {
+    var parsedParams = GetSingleUserParams.parse(req.params)
+  } catch (err) {
+    const errors = formatZodError(err)
+
+    return res
+      .status(400)
+      .json({ status: STATUS.FAIL, message: MESSAGE.INVALID_REQUEST, errors })
+  }
+
+  const { userId } = parsedParams
+
+  const foundUser = await prisma.user.findUnique({ where: { id: userId } })
+
+  if (!foundUser)
+    return res
+      .status(404)
+      .json({ status: STATUS.FAIL, message: 'User not found' })
+
+  return res
+    .status(200)
+    .json({ status: STATUS.SUCCESS, data: { user: foundUser } })
+}
