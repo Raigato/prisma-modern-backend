@@ -30,6 +30,7 @@ export const createUserHandler = async (req: Request, res: APIResponse) => {
     var parsedBody = CreateUserInput.parse(req.body)
   } catch (err) {
     const errors = formatZodError(err)
+
     return res
       .status(400)
       .json({ status: STATUS.FAIL, message: MESSAGE.INVALID_REQUEST, errors })
