@@ -2,6 +2,7 @@ import prisma from './lib/prisma'
 import { add } from 'date-fns'
 
 const resetDB = async () => {
+  await prisma.testResult.deleteMany()
   await prisma.courseEnrollment.deleteMany()
   await prisma.test.deleteMany()
   await prisma.course.deleteMany()
@@ -11,7 +12,7 @@ const resetDB = async () => {
 const seed = async () => {
   await resetDB()
 
-  const user = await prisma.user.create({
+  const drDoe = await prisma.user.create({
     data: {
       email: 'john.doe@test.com',
       firstName: 'John',
@@ -51,7 +52,7 @@ const seed = async () => {
         create: {
           role: 'TEACHER',
           user: {
-            connect: { email: user.email },
+            connect: { email: drDoe.email },
           },
         },
       },
@@ -66,8 +67,102 @@ const seed = async () => {
     },
   })
 
-  console.log('user', user)
+  const shakur = await prisma.user.create({
+    data: {
+      email: 'tupac.shakur@test.com',
+      firstName: 'Tupac',
+      lastName: 'Shakur',
+      enrollments: {
+        create: {
+          role: 'STUDENT',
+          course: {
+            connect: { id: course.id },
+          },
+        },
+      },
+    },
+    include: {
+      enrollments: {
+        include: {
+          course: true,
+        },
+      },
+    },
+  })
+
+  const jada = await prisma.user.create({
+    data: {
+      email: 'jada.menace@test.com',
+      firstName: 'Jada',
+      lastName: 'Menace',
+      enrollments: {
+        create: {
+          role: 'STUDENT',
+          course: {
+            connect: { id: course.id },
+          },
+        },
+      },
+    },
+    include: {
+      enrollments: {
+        include: {
+          course: true,
+        },
+      },
+    },
+  })
+
+  const testResults = [800, 950, 700]
+  let counter = 0
+  for (const test of course.tests) {
+    await prisma.testResult.create({
+      data: {
+        grader: {
+          connect: {
+            email: drDoe.email,
+          },
+        },
+        student: {
+          connect: {
+            email: shakur.email,
+          },
+        },
+        test: {
+          connect: {
+            id: test.id,
+          },
+        },
+        result: testResults[counter],
+      },
+    })
+
+    counter++
+  }
+
+  const shakurAvg = await prisma.testResult.aggregate({
+    where: {
+      studentId: shakur.id,
+    },
+    _avg: {
+      result: true,
+    },
+    _min: {
+      result: true,
+    },
+    _max: {
+      result: true,
+    },
+    _count: {
+      result: true,
+    },
+  })
+
+  console.log('Dr. Doe', drDoe)
   console.log('course', course)
+  console.log('Tupac Shakur', shakur)
+  console.log('Jada Menace', jada)
+  console.log("Tupac's avg", shakurAvg)
 }
 
 seed()
@@ -76,3 +171,5 @@ seed()
     process.exit(1)
   })
   .finally(() => prisma.$disconnect())
+
+export default seed
