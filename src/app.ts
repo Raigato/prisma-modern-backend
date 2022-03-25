@@ -1,11 +1,10 @@
 import express from 'express'
+import router from './routes'
 
 const app = express()
 
 app.use(express.json())
 
-app.get('/healthz', (_, res) => {
-  res.send('OK')
-})
+app.use('/', router)
 
 export default app
