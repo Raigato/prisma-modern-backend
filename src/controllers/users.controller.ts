@@ -49,8 +49,8 @@ export const createUserHandler = async (req: Request, res: APIResponse) => {
     })
   } catch (err) {
     req.log.error(
-      '[src/controllers/users.controllers.ts#createUserHandler]',
-      err
+      { err },
+      '[src/controllers/users.controllers.ts#createUserHandler]'
     )
 
     return res
