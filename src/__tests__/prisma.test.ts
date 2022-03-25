@@ -1,7 +1,7 @@
 import seed from '../lib/seed'
 import prisma from '../lib/prisma'
 
-describe('Prisma client test', () => {
+describe('Prisma client', () => {
   beforeAll(async () => {
     await prisma.$connect()
     await seed(false)
