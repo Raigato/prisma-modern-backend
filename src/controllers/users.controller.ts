@@ -80,7 +80,15 @@ export const getSingleUserHandler = async (req: Request, res: APIResponse) => {
 
   const { userId } = parsedParams
 
-  const foundUser = await prisma.user.findUnique({ where: { id: userId } })
+  const foundUser = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      email: true,
+      firstName: true,
+      lastName: true,
+      social: true,
+    },
+  })
 
   if (!foundUser)
     return res
