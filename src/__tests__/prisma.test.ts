@@ -1,8 +1,10 @@
+import seed from '../lib/seed'
 import prisma from '../lib/prisma'
 
 describe('Prisma client test', () => {
   beforeAll(async () => {
     await prisma.$connect()
+    await seed(false)
   })
 
   afterAll(async () => {
