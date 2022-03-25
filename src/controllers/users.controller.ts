@@ -54,7 +54,7 @@ export const createUserHandler = async (req: Request, res: APIResponse) => {
 
     return res
       .status(500)
-      .json({ status: STATUS.ERROR, message: MESSAGE.EROOR_HAS_OCCURED })
+      .json({ status: STATUS.ERROR, message: MESSAGE.ERROR_HAS_OCCURED })
   }
 
   return res
