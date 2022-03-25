@@ -3,17 +3,16 @@ import serverConfig from './config/server'
 
 const { port, host } = serverConfig
 
-const start = () => {
-  app.listen(port as number, host, () => {
-    console.info(`Server listening on ${host}:${port}`)
-  })
-
-  return app
-}
-
-process.on('unhandledRejection', (err) => {
-  console.error(err)
-  process.exit(1)
+const server = app.listen(port as number, host, () => {
+  console.info(`Server listening on ${host}:${port}`)
 })
 
-start()
+process.on('unhandledRejection', (err) => {
+  console.error('UnhandledRejection: Shutting down...', err)
+  server.close(() => process.exit(1))
+})
+
+process.on('SIGTERM', () => {
+  console.info('SIGTERM received: Shutting down gracefully')
+  server.close(() => console.info('Process terminated'))
+})
