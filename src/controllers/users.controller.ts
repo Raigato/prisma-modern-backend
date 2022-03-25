@@ -1,6 +1,7 @@
-import { Request, Response } from 'express'
+import { Request } from 'express'
 import { z } from 'zod'
 
+import APIResponse from '../types/APIResponse'
 import MESSAGE from '../constants/MESSAGE'
 import STATUS from '../constants/STATUS'
 import prisma from '../lib/prisma'
@@ -24,7 +25,7 @@ const CreateUserInput = z.object({
     .optional(),
 })
 
-export const createUserHandler = async (req: Request, res: Response) => {
+export const createUserHandler = async (req: Request, res: APIResponse) => {
   try {
     var parsedBody = CreateUserInput.parse(req.body)
   } catch (err) {
