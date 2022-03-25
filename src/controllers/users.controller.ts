@@ -87,7 +87,5 @@ export const getSingleUserHandler = async (req: Request, res: APIResponse) => {
       .status(404)
       .json({ status: STATUS.FAIL, message: 'User not found' })
 
-  return res
-    .status(200)
-    .json({ status: STATUS.SUCCESS, data: { user: foundUser } })
+  return res.status(200).json({ status: STATUS.SUCCESS, data: foundUser })
 }
