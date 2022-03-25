@@ -1,29 +1,14 @@
 import { Request } from 'express'
-import { z } from 'zod'
 
 import APIResponse from '../types/APIResponse'
 import MESSAGE from '../constants/MESSAGE'
 import STATUS from '../constants/STATUS'
 import prisma from '../lib/prisma'
 import formatZodError from '../utils/formatZodError'
-
-const Social = z.string().optional()
-
-const CreateUserInput = z.object({
-  email: z.string().email(),
-  firstName: z.string(),
-  lastName: z.string(),
-  social: z
-    .object({
-      facebook: Social,
-      twitter: Social,
-      instagram: Social,
-      tiktok: Social,
-      github: Social,
-      website: z.string().url().optional(),
-    })
-    .optional(),
-})
+import {
+  CreateUserInput,
+  GetSingleUserParams,
+} from '../validation/users.validation'
 
 export const createUserHandler = async (req: Request, res: APIResponse) => {
   try {
@@ -62,10 +47,6 @@ export const createUserHandler = async (req: Request, res: APIResponse) => {
     .status(201)
     .json({ status: STATUS.SUCCESS, data: { id: createdUser.id } })
 }
-
-const GetSingleUserParams = z.object({
-  userId: z.string().uuid(),
-})
 
 export const getSingleUserHandler = async (req: Request, res: APIResponse) => {
   try {
