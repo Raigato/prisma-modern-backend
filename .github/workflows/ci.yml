@@ -1,3 +1,5 @@
+# .github/workflows/ci.yml
+
 name: CI
 
 on: push
@@ -23,24 +25,24 @@ jobs:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
 
-      env:
-        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/grading-app
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/grading-app
 
-      steps:
-        - uses: actions/checkout@v2
+    steps:
+      - uses: actions/checkout@v2
 
-        - uses: actions/setup-node@v3
-          with:
-            cache: 'yarn'
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'yarn'
 
-        - name: Install dependencies
-          run: yarn
+      - name: Install dependencies
+        run: yarn
 
-        - name: Migrate DB
-          run: npx prisma migrate deploy
+      - name: Migrate DB
+        run: npx prisma migrate deploy
 
-        - name: Lint
-          run: yarn lint
+      - name: Lint
+        run: yarn lint
 
-        - name: Test
-          run: yarn test --passWithNoTests
+      - name: Test
+        run: yarn test --passWithNoTests
