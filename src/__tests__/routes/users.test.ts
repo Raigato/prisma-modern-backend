@@ -14,7 +14,7 @@ describe('Users routes', () => {
     await prisma.$disconnect()
   })
 
-  it('should create an user', async () => {
+  it('should create returns a 201 with an user id', async () => {
     const data = {
       email: 'gab@test.com',
       firstName: 'Gab',
@@ -24,5 +24,7 @@ describe('Users routes', () => {
     const response = await supertest(app).post('/api/users').send(data)
 
     expect(response.statusCode).toEqual(201)
+
+    expect(response.body.data.id).toBeTruthy()
   })
 })
