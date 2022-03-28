@@ -27,4 +27,14 @@ describe('Users routes', () => {
 
     expect(response.body.data.id).toBeTruthy()
   })
+
+  it('should fail with invalid input', async () => {
+    const data = {
+      email: 'gab@test.com',
+    }
+
+    const response = await supertest(app).post('/api/users').send(data)
+
+    expect(response.statusCode).toEqual(400)
+  })
 })
