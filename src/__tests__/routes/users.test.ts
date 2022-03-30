@@ -14,27 +14,29 @@ describe('Users routes', () => {
     await prisma.$disconnect()
   })
 
-  it('should create returns a 201 with an user id', async () => {
-    const data = {
-      email: 'gab@test.com',
-      firstName: 'Gab',
-      lastName: 'Test',
-    }
+  describe('create user', () => {
+    it('should create returns a 201 with an user id', async () => {
+      const data = {
+        email: 'gab@test.com',
+        firstName: 'Gab',
+        lastName: 'Test',
+      }
 
-    const response = await supertest(app).post('/api/users').send(data)
+      const response = await supertest(app).post('/api/users').send(data)
 
-    expect(response.statusCode).toEqual(201)
+      expect(response.statusCode).toEqual(201)
 
-    expect(response.body.data.id).toBeTruthy()
-  })
+      expect(response.body.data.id).toBeTruthy()
+    })
 
-  it('should fail with invalid input', async () => {
-    const data = {
-      email: 'gab@test.com',
-    }
+    it('should fail with invalid input', async () => {
+      const data = {
+        email: 'gab@test.com',
+      }
 
-    const response = await supertest(app).post('/api/users').send(data)
+      const response = await supertest(app).post('/api/users').send(data)
 
-    expect(response.statusCode).toEqual(400)
+      expect(response.statusCode).toEqual(400)
+    })
   })
 })
