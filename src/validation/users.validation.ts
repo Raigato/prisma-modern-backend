@@ -18,6 +18,6 @@ export const CreateUserInput = z.object({
     .optional(),
 })
 
-export const GetSingleUserParams = z.object({
+export const UserIdParams = z.object({
   userId: z.string().uuid(),
 })
