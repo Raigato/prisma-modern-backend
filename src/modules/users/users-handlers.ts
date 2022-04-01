@@ -11,9 +11,9 @@ import {
 import APIResponse from '../../types/APIResponse'
 import MESSAGE from '../../constants/MESSAGE'
 import STATUS from '../../constants/STATUS'
-import prisma from '../../lib/prisma'
 import formatZodError from '../../utils/formatZodError'
 import { CreateUserInput, UserIdParams } from './users-validation'
+import { createUser, deleteUser, findUserById } from './users-service'
 
 export const createUserHandler = async (req: Request, res: APIResponse) => {
   try {
@@ -29,13 +29,11 @@ export const createUserHandler = async (req: Request, res: APIResponse) => {
   const { email, firstName, lastName, social } = parsedBody
 
   try {
-    var createdUser = await prisma.user.create({
-      data: {
-        email: email,
-        firstName: firstName,
-        lastName: lastName,
-        social: social,
-      },
+    var createdUser = await createUser({
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+      social: social,
     })
   } catch (err) {
     req.log.error(
@@ -66,15 +64,7 @@ export const getSingleUserHandler = async (req: Request, res: APIResponse) => {
 
   const { userId } = parsedParams
 
-  const foundUser = await prisma.user.findUnique({
-    where: { id: userId },
-    select: {
-      email: true,
-      firstName: true,
-      lastName: true,
-      social: true,
-    },
-  })
+  const foundUser = await findUserById(userId)
 
   if (!foundUser)
     return res
@@ -98,11 +88,7 @@ export const deleteUserHandler = async (req: Request, res: APIResponse) => {
   const { userId } = parsedParams
 
   try {
-    await prisma.user.delete({
-      where: {
-        id: userId,
-      },
-    })
+    await deleteUser(userId)
   } catch {
     return res
       .status(NOT_FOUND)
