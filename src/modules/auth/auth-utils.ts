@@ -37,10 +37,6 @@ export const generateEmailToken = (): string =>
 export const generateAPIToken = (tokenId: string): string => {
   const payload = { tokenId }
 
-  console.log('appConfig', appConfig)
-  console.log('FROM ENV', process.env.JWT_SECRET)
-  console.log('secret', secret)
-
   return jwt.sign(payload, secret, {
     algorithm: algorithm as jwt.Algorithm,
   })
