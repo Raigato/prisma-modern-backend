@@ -2,9 +2,6 @@ import app from './app'
 import serverConfig from './config/server.config'
 import logger from './lib/logger'
 import prisma from './lib/prisma'
-import dotenv from 'dotenv-flow'
-
-dotenv.config()
 
 const { port, host } = serverConfig
 

@@ -1,4 +1,7 @@
 import express from 'express'
+import dotenv from 'dotenv-flow'
+
+dotenv.config()
 
 import logger from './lib/logger'
 import router from './router'
