@@ -1,4 +1,12 @@
 import { Request } from 'express'
+import {
+  BAD_REQUEST,
+  INTERNAL_SERVER_ERROR,
+  CREATED,
+  OK,
+  NO_CONTENT,
+  NOT_FOUND,
+} from 'http-status'
 
 import APIResponse from '../../types/APIResponse'
 import MESSAGE from '../../constants/MESSAGE'
@@ -14,7 +22,7 @@ export const createUserHandler = async (req: Request, res: APIResponse) => {
     const errors = formatZodError(err)
 
     return res
-      .status(400)
+      .status(BAD_REQUEST)
       .json({ status: STATUS.FAIL, message: MESSAGE.INVALID_REQUEST, errors })
   }
 
@@ -36,12 +44,12 @@ export const createUserHandler = async (req: Request, res: APIResponse) => {
     )
 
     return res
-      .status(500)
+      .status(INTERNAL_SERVER_ERROR)
       .json({ status: STATUS.ERROR, message: MESSAGE.ERROR_HAS_OCCURED })
   }
 
   return res
-    .status(201)
+    .status(CREATED)
     .json({ status: STATUS.SUCCESS, data: { id: createdUser.id } })
 }
 
@@ -52,7 +60,7 @@ export const getSingleUserHandler = async (req: Request, res: APIResponse) => {
     const errors = formatZodError(err)
 
     return res
-      .status(400)
+      .status(BAD_REQUEST)
       .json({ status: STATUS.FAIL, message: MESSAGE.INVALID_REQUEST, errors })
   }
 
@@ -70,10 +78,10 @@ export const getSingleUserHandler = async (req: Request, res: APIResponse) => {
 
   if (!foundUser)
     return res
-      .status(404)
+      .status(NOT_FOUND)
       .json({ status: STATUS.FAIL, message: 'User not found' })
 
-  return res.status(200).json({ status: STATUS.SUCCESS, data: foundUser })
+  return res.status(OK).json({ status: STATUS.SUCCESS, data: foundUser })
 }
 
 export const deleteUserHandler = async (req: Request, res: APIResponse) => {
@@ -83,7 +91,7 @@ export const deleteUserHandler = async (req: Request, res: APIResponse) => {
     const errors = formatZodError(err)
 
     return res
-      .status(400)
+      .status(BAD_REQUEST)
       .json({ status: STATUS.FAIL, message: MESSAGE.INVALID_REQUEST, errors })
   }
 
@@ -97,9 +105,9 @@ export const deleteUserHandler = async (req: Request, res: APIResponse) => {
     })
   } catch {
     return res
-      .status(404)
+      .status(NOT_FOUND)
       .json({ status: STATUS.FAIL, message: 'User not found' })
   }
 
-  return res.status(204).send()
+  return res.status(NO_CONTENT).send()
 }
