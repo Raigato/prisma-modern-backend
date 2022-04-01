@@ -3,6 +3,9 @@ import supertest from 'supertest'
 import app from '../../app'
 import seed from '../../lib/seed'
 import prisma from '../../lib/prisma'
+import { appConfig } from '../../config'
+
+const PREFIX = appConfig.prefix
 
 var userId: string
 
@@ -24,7 +27,7 @@ describe('Users routes', () => {
         lastName: 'Test',
       }
 
-      const response = await supertest(app).post('/api/users').send(data)
+      const response = await supertest(app).post(`${PREFIX}/users`).send(data)
 
       expect(response.statusCode).toEqual(201)
 
@@ -38,7 +41,7 @@ describe('Users routes', () => {
         email: 'gab@test.com',
       }
 
-      const response = await supertest(app).post('/api/users').send(data)
+      const response = await supertest(app).post(`${PREFIX}/users`).send(data)
 
       expect(response.statusCode).toEqual(400)
     })
@@ -54,7 +57,7 @@ describe('Users routes', () => {
 
       const user = await prisma.user.create({ data })
 
-      const response = await supertest(app).get(`/api/users/${user.id}`)
+      const response = await supertest(app).get(`${PREFIX}/users/${user.id}`)
 
       expect(response.statusCode).toEqual(200)
 
@@ -76,7 +79,7 @@ describe('Users routes', () => {
 
       await prisma.user.delete({ where: { id } })
 
-      const response = await supertest(app).get(`/api/users/${user.id}`)
+      const response = await supertest(app).get(`${PREFIX}/users/${user.id}`)
 
       expect(response.statusCode).toEqual(404)
     })
@@ -84,7 +87,7 @@ describe('Users routes', () => {
 
   describe('delete user', () => {
     it('should return 204 after deleting an user successfully', async () => {
-      const response = await supertest(app).delete(`/api/users/${userId}`)
+      const response = await supertest(app).delete(`${PREFIX}/users/${userId}`)
 
       expect(response.statusCode).toEqual(204)
     })

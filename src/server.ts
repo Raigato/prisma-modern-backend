@@ -1,5 +1,5 @@
 import app from './app'
-import serverConfig from './config/server'
+import serverConfig from './config/server.config'
 import logger from './lib/logger'
 import prisma from './lib/prisma'
 

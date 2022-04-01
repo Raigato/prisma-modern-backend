@@ -1,11 +1,11 @@
 import { Request } from 'express'
 
-import APIResponse from '../types/APIResponse'
-import MESSAGE from '../constants/MESSAGE'
-import STATUS from '../constants/STATUS'
-import prisma from '../lib/prisma'
-import formatZodError from '../utils/formatZodError'
-import { CreateUserInput, UserIdParams } from '../validation/users.validation'
+import APIResponse from '../../types/APIResponse'
+import MESSAGE from '../../constants/MESSAGE'
+import STATUS from '../../constants/STATUS'
+import prisma from '../../lib/prisma'
+import formatZodError from '../../utils/formatZodError'
+import { CreateUserInput, UserIdParams } from './users-validation'
 
 export const createUserHandler = async (req: Request, res: APIResponse) => {
   try {
