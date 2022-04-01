@@ -1,8 +1,8 @@
 import prisma from '../../lib/prisma'
 
-import { CreateUserBody } from './users-validation'
+import { CreateUserData } from './users-validation'
 
-export const createUser = (data: CreateUserBody) => prisma.user.create({ data })
+export const createUser = (data: CreateUserData) => prisma.user.create({ data })
 
 export const findUserById = (id: string) =>
   prisma.user.findUnique({
