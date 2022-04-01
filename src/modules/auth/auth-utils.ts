@@ -24,11 +24,13 @@ export const decodeJWT = (req: Request) => {
 
   if (!token) throw new Error(JWT_ERROR.NONE_FOUND)
 
-  return jwt.verify(token, secret as string, (err, decodedToken) => {
+  jwt.verify(token, secret as string, (err, decodedToken) => {
     if (err) throw new Error(JWT_ERROR.BAD_TOKEN)
 
     return decodedToken
   })
+
+  return jwt.decode(token)
 }
 
 export const generateEmailToken = (): string =>

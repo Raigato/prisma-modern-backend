@@ -49,3 +49,16 @@ export const invalidateToken = (id: string) =>
       valid: false,
     },
   })
+
+export const getTokenUser = async (tokenId: string) => {
+  const token = await prisma.token.findUnique({
+    where: {
+      id: tokenId,
+    },
+    include: {
+      user: true,
+    },
+  })
+
+  return token?.user
+}

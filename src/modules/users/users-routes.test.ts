@@ -7,89 +7,116 @@ import { appConfig } from '../../config'
 
 const PREFIX = appConfig.prefix
 
+var token: string
 var userId: string
 
 describe('Users routes', () => {
-  beforeAll(async () => {
-    await prisma.$connect()
-    await seed(false)
-  })
+  describe('[AUTHENTICATED]', () => {
+    beforeAll(async () => {
+      await prisma.$connect()
+      await seed(false)
 
-  afterAll(async () => {
-    await prisma.$disconnect()
-  })
+      const email = 'auth@test.com'
 
-  describe('create user', () => {
-    it('should returns a 201 with an user id', async () => {
-      const data = {
-        email: 'gab@test.com',
-        firstName: 'Gab',
-        lastName: 'Test',
-      }
+      const loginResponse = await supertest(app)
+        .post(`${PREFIX}/login`)
+        .send({ email })
 
-      const response = await supertest(app).post(`${PREFIX}/users`).send(data)
+      const authenticateResponse = await supertest(app)
+        .post(`${PREFIX}/authenticate`)
+        .send({ email, emailToken: loginResponse.body.data.token })
 
-      expect(response.statusCode).toEqual(201)
-
-      expect(response.body.data.id).toBeTruthy()
-
-      userId = response.body.data.id
+      token = authenticateResponse.headers.authorization
     })
 
-    it('should fail with invalid input', async () => {
-      const data = {
-        email: 'gab@test.com',
-      }
-
-      const response = await supertest(app).post(`${PREFIX}/users`).send(data)
-
-      expect(response.statusCode).toEqual(400)
-    })
-  })
-
-  describe('get single user', () => {
-    it('should return a 200 and the right user', async () => {
-      const data = {
-        email: 'singleUser@test.com',
-        firstName: 'Single',
-        lastName: 'User',
-      }
-
-      const user = await prisma.user.create({ data })
-
-      const response = await supertest(app).get(`${PREFIX}/users/${user.id}`)
-
-      expect(response.statusCode).toEqual(200)
-
-      const { id, isAdmin, ...userData } = user
-
-      expect(response.body.data).toEqual(userData)
+    afterAll(async () => {
+      await prisma.$disconnect()
     })
 
-    it('should return a 404 if user is not found', async () => {
-      const data = {
-        email: 'notFoundUser@test.com',
-        firstName: 'NotFound',
-        lastName: 'User',
-      }
+    describe('create user', () => {
+      it('should returns a 201 with an user id', async () => {
+        const data = {
+          email: 'create@test.com',
+          firstName: 'Create',
+          lastName: 'Test',
+        }
 
-      const user = await prisma.user.create({ data })
+        const response = await supertest(app)
+          .post(`${PREFIX}/users`)
+          .set('Authorization', `Bearer ${token}`)
+          .send(data)
 
-      const { id } = user
+        expect(response.statusCode).toEqual(201)
 
-      await prisma.user.delete({ where: { id } })
+        expect(response.body.data.id).toBeTruthy()
 
-      const response = await supertest(app).get(`${PREFIX}/users/${user.id}`)
+        userId = response.body.data.id
+      })
 
-      expect(response.statusCode).toEqual(404)
+      it('should fail with invalid input', async () => {
+        const data = {
+          email: 'create@test.com',
+        }
+
+        const response = await supertest(app)
+          .post(`${PREFIX}/users`)
+          .set('Authorization', `Bearer ${token}`)
+          .send(data)
+
+        expect(response.statusCode).toEqual(400)
+      })
     })
-  })
 
-  describe('delete user', () => {
-    it('should return 204 after deleting an user successfully', async () => {
-      const response = await supertest(app).delete(`${PREFIX}/users/${userId}`)
+    describe('get single user', () => {
+      it('should return a 200 and the right user', async () => {
+        const data = {
+          email: 'singleUser@test.com',
+          firstName: 'Single',
+          lastName: 'User',
+        }
 
-      expect(response.statusCode).toEqual(204)
+        const user = await prisma.user.create({ data })
+
+        const response = await supertest(app)
+          .get(`${PREFIX}/users/${user.id}`)
+          .set('Authorization', `Bearer ${token}`)
+
+        expect(response.statusCode).toEqual(200)
+
+        const { id, isAdmin, ...userData } = user
+
+        expect(response.body.data).toEqual(userData)
+      })
+
+      it('should return a 404 if user is not found', async () => {
+        const data = {
+          email: 'notFoundUser@test.com',
+          firstName: 'NotFound',
+          lastName: 'User',
+        }
+
+        const user = await prisma.user.create({ data })
+
+        const { id } = user
+
+        await prisma.user.delete({ where: { id } })
+
+        const response = await supertest(app)
+          .get(`${PREFIX}/users/${user.id}`)
+          .set('Authorization', `Bearer ${token}`)
+
+        expect(response.statusCode).toEqual(404)
+      })
+    })
+
+    describe('delete user', () => {
+      it('should return 204 after deleting an user successfully', async () => {
+        const response = await supertest(app)
+          .delete(`${PREFIX}/users/${userId}`)
+          .set('Authorization', `Bearer ${token}`)
+
+        expect(response.statusCode).toEqual(204)
+      })
     })
   })
 })

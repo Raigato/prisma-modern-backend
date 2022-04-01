@@ -8,6 +8,7 @@ const resetDB = async () => {
   await prisma.courseEnrollment.deleteMany()
   await prisma.test.deleteMany()
   await prisma.course.deleteMany()
+  await prisma.token.deleteMany()
   await prisma.user.deleteMany()
 }
 
