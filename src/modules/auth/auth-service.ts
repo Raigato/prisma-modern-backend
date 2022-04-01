@@ -18,3 +18,34 @@ export const createEmailToken = (
       },
     },
   })
+
+export const fetchEmailToken = (emailToken: string) =>
+  prisma.token.findUnique({
+    where: {
+      emailToken,
+    },
+    include: {
+      user: true,
+    },
+  })
+
+export const createToken = (email: string, expiration: Date) =>
+  prisma.token.create({
+    data: {
+      type: 'API',
+      expiration,
+      user: {
+        connect: {
+          email,
+        },
+      },
+    },
+  })
+
+export const invalidateToken = (id: string) =>
+  prisma.token.update({
+    where: { id },
+    data: {
+      valid: false,
+    },
+  })

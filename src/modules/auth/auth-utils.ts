@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 
 import { appConfig } from '../../config'
 
-const SECRET = appConfig.jwt.secret
+const { secret, algorithm } = appConfig.jwt
 
 export enum JWT_ERROR {
   NONE_FOUND = 'No token found',
@@ -24,7 +24,7 @@ export const decodeJWT = (req: Request) => {
 
   if (!token) throw new Error(JWT_ERROR.NONE_FOUND)
 
-  return jwt.verify(token, SECRET as string, (err, decodedToken) => {
+  return jwt.verify(token, secret as string, (err, decodedToken) => {
     if (err) throw new Error(JWT_ERROR.BAD_TOKEN)
 
     return decodedToken
@@ -33,3 +33,15 @@ export const decodeJWT = (req: Request) => {
 
 export const generateEmailToken = (): string =>
   Math.floor(10_000_000 + Math.random() * 90_000_000).toString()
+
+export const generateAPIToken = (tokenId: string): string => {
+  const payload = { tokenId }
+
+  console.log('appConfig', appConfig)
+  console.log('FROM ENV', process.env.JWT_SECRET)
+  console.log('secret', secret)
+
+  return jwt.sign(payload, secret, {
+    algorithm: algorithm as jwt.Algorithm,
+  })
+}
