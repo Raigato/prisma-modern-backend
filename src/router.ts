@@ -3,7 +3,7 @@ import { OK, NOT_FOUND } from 'http-status'
 
 import STATUS from './constants/STATUS'
 import APIResponse from './types/APIResponse'
-import userRouter from './modules/users/users-routes'
+import userRouter from './modules/users'
 import { appConfig } from './config'
 
 const PREFIX = appConfig.prefix
