@@ -34,8 +34,8 @@ export const decodeJWT = (req: Request) => {
 export const generateEmailToken = (): string =>
   Math.floor(10_000_000 + Math.random() * 90_000_000).toString()
 
-export const generateAPIToken = (tokenId: string): string => {
-  const payload = { tokenId }
+export const generateAPIToken = (id: string): string => {
+  const payload = { id }
 
   return jwt.sign(payload, secret, {
     algorithm: algorithm as jwt.Algorithm,
