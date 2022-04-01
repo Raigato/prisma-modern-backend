@@ -61,7 +61,7 @@ describe('Users routes', () => {
 
       expect(response.statusCode).toEqual(200)
 
-      const { id, ...userData } = user
+      const { id, isAdmin, ...userData } = user
 
       expect(response.body.data).toEqual(userData)
     })
