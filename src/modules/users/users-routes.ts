@@ -4,7 +4,7 @@ import {
   createUserHandler,
   deleteUserHandler,
   getSingleUserHandler,
-} from './users-controller'
+} from './users-handlers'
 
 const userRouter = express.Router()
 
