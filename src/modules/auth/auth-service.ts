@@ -50,7 +50,7 @@ export const invalidateToken = (id: string) =>
     },
   })
 
-export const getTokenUser = async (tokenId: string) => {
+export const fetchTokenWithUser = async (tokenId: string) => {
   const token = await prisma.token.findUnique({
     where: {
       id: tokenId,
@@ -60,5 +60,5 @@ export const getTokenUser = async (tokenId: string) => {
     },
   })
 
-  return token?.user
+  return token
 }
