@@ -11,6 +11,41 @@ var token: string
 var userId: string
 
 describe('Users routes', () => {
+  describe('[UNAUTHENTICATED]', () => {
+    describe('create user', () => {
+      it('should return a 401', async () => {
+        const data = {
+          email: 'create@test.com',
+          firstName: 'Create',
+          lastName: 'Test',
+        }
+
+        const response = await supertest(app)
+          .post(`${PREFIX}/users`)
+          .set('Authorization', `Bearer ${token}`)
+          .send(data)
+
+        expect(response.statusCode).toEqual(401)
+      })
+    })
+
+    describe('get a single user', () => {
+      it('should return a 401', async () => {
+        const response = await supertest(app).get(`${PREFIX}/users/userId`)
+
+        expect(response.statusCode).toEqual(401)
+      })
+    })
+
+    describe('delete user', () => {
+      it('should return a 401', async () => {
+        const response = await supertest(app).delete(`${PREFIX}/users/userId`)
+
+        expect(response.statusCode).toEqual(401)
+      })
+    })
+  })
+
   describe('[AUTHENTICATED]', () => {
     beforeAll(async () => {
       await prisma.$connect()
@@ -34,7 +69,7 @@ describe('Users routes', () => {
     })
 
     describe('create user', () => {
-      it('should returns a 201 with an user id', async () => {
+      it('should return a 201 with an user id', async () => {
         const data = {
           email: 'create@test.com',
           firstName: 'Create',
