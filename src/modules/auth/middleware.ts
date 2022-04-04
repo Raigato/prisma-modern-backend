@@ -1,5 +1,6 @@
 import { NextFunction } from 'express'
 import { UNAUTHORIZED } from 'http-status'
+import { User } from '@prisma/client'
 
 import MESSAGE from '../../constants/MESSAGE'
 import STATUS from '../../constants/STATUS'
@@ -9,7 +10,7 @@ import { AuthenticatedRequest, Role, TokenPayload } from './auth-types'
 import { decodeJWT } from './auth-utils'
 
 const guard =
-  (role?: Role) =>
+  (role?: Role, ...checks: Array<(user: User) => boolean>) =>
   async (req: AuthenticatedRequest, res: APIResponse, next: NextFunction) => {
     try {
       const token = decodeJWT(req) as TokenPayload
@@ -34,6 +35,14 @@ const guard =
         return res
           .status(UNAUTHORIZED)
           .json({ status: STATUS.FAIL, message: MESSAGE.UNAUTHORIZED })
+      }
+
+      for (const check of checks) {
+        if (!check(user)) {
+          return res
+            .status(UNAUTHORIZED)
+            .json({ status: STATUS.FAIL, message: MESSAGE.UNAUTHORIZED })
+        }
       }
 
       req.user = user
