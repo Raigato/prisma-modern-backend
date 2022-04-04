@@ -10,7 +10,7 @@ import { AuthenticatedRequest, Role, TokenPayload } from './auth-types'
 import { decodeJWT } from './auth-utils'
 
 const guard =
-  (role?: Role, ...checks: Array<(user: User) => boolean>) =>
+  (role: Role = 'user', ...checks: Array<(user: User) => boolean>) =>
   async (req: AuthenticatedRequest, res: APIResponse, next: NextFunction) => {
     try {
       const token = decodeJWT(req) as TokenPayload
